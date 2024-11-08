@@ -53,8 +53,17 @@ const dates = [
     { name: "Debate Things we know nothing about" },
     { name: "Spa Day?" },
     { name: "Have a Deep Conversation" },
+    { name: "Just Cuddle" },
+    { name: "Soccer" },
+    { name: "Splatter Lab" },
+    { name: "Crispy Cones" },
+    { name: "Bear World" },
+    { name: "Righteous Slice" },
+    { name: "Teton National Park" },
+    { name: "Temple Trip" },
 ];
-
+//template:
+//{ name: "" },
 const dateText = document.getElementById("random-date");
 const dateButton = document.getElementById("button");
 
