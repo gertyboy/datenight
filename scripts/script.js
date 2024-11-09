@@ -61,6 +61,12 @@ const dates = [
     { name: "Righteous Slice" },
     { name: "Teton National Park" },
     { name: "Temple Trip" },
+    { name: "Learn Pottery" },
+    { name: "Rexburg Planetarium" },
+    { name: "Idaho Falls Aquarium" },
+    { name: "French Fry Taste Contest" },
+    { name: "Walk through the greenhouses in the Benson building" },
+    { name: "Go to Craters of the moon park" },
 ];
 //template:
 //{ name: "" },
