@@ -67,6 +67,8 @@ const dates = [
     { name: "French Fry Taste Contest" },
     { name: "Walk through the greenhouses in the Benson building" },
     { name: "Go to Craters of the moon park" },
+    { name: "Coffee Date" },
+    
 ];
 //template:
 //{ name: "" },
