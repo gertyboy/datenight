@@ -70,6 +70,10 @@ const dates = [
     { name: "Coffee Date", cost: "5", time: "30" },
     { name: "Get Chocolate", cost: "10", time: "30" },
     { name: "Buy a board game", cost: "20", time: "60" },
+    { name: "Candle Making", cost: "15", time: "60" }, 
+    { name: "Pickle Making", cost: "10", time: "60" },
+    { name: "Pretzel Baking", cost: "15", time: "60" },
+    { name: "Picnic", cost: "10", time: "90" }
 ];
 //template:
 //{ name: "" },
