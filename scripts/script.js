@@ -114,7 +114,8 @@ const dates = [
     { name: "Attend a film festival", cost: "50", time: "240" },
     { name: "Go to a lantern festival", cost: "20", time: "180" },
     { name: "Visit a butterfly garden", cost: "10", time: "60" },
-    { name: "Go to a tulip festival", cost: "15", time: "120" }
+    { name: "Go to a tulip festival", cost: "15", time: "120" },
+    { name: "Just go for a drive", cost: "0", time: "60" }
 ]
 //template:
 //{ name: "", cost: "", time: "" },
