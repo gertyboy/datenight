@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetBtn = document.getElementById('resetBtn');
     const nextBestBtn = document.getElementById('nextBestBtn');
 
-    // The JSON data is now stored directly as a JavaScript array
+    // The JSON data stored directly as a JavaScript array
     const dateIdeas = [
         { "id": 1, "title": "Movie Night", "energy": "low", "budget": 0, "min_length": 1.5, "preference": "cozy", "description": "Cozy up with blankets for a movie night in the apartment." },
         { "id": 2, "title": "Car Karaoke", "energy": "high", "budget": 5, "min_length": 0.5, "preference": "cozy", "description": "Singing our favorite songs at the top of our lungs while driving around." },
@@ -114,34 +114,43 @@ document.addEventListener('DOMContentLoaded', () => {
         { "id": 105, "title": "Just go for a drive", "energy": "low", "budget": 0, "min_length": 1, "preference": "cozy", "description": "No destination, just driving and talking." }
     ];
 
+    // Numerical scale for energy transition rules
+    const energyLevels = { 'high': 3, 'medium': 2, 'low': 1 };
+
     let rankedMatches = [];
     let currentMatchIndex = 0;
     let timeSelected = '';
 
-    // Scoring Algorithm to find the closest match
-    function calculateScore(date, user) {
+    // Advanced Scoring Algorithm 
+    function calculateScore(option, user) {
         let score = 0;
 
-        // Vibe/Preference is the most important (+20 points)
-        if (date.preference === user.preference) score += 20;
-
-        // Energy is very important (+15 points)
-        if (date.energy === user.energy) score += 15;
-
-        // Budget checking
-        if (date.budget <= user.budget) {
-            score += 10; // Reward for being under/at budget
+        // Vibe/Preference Scoring
+        if (option.isCombo) {
+            // High points if the primary date matches the vibe, partial credit if only the second does
+            if (option.d1_pref === user.preference) score += 20;
+            else if (option.d2_pref === user.preference) score += 10; 
         } else {
-            // Penalize 1 point for every dollar over budget
-            score -= (date.budget - user.budget);
+            if (option.preference === user.preference) score += 20;
         }
 
-        // Time checking
-        if (date.min_length <= user.length) {
-            score += 10; // Reward for fitting in the time window
+        // Energy Scoring (Base it on the primary date's starting energy)
+        if (option.energy === user.energy) score += 15;
+
+        // Budget checking
+        if (option.budget <= user.budget) {
+            score += 10; 
         } else {
-            // Penalize 5 points for every half hour over time
-            score -= ((date.min_length - user.length) * 10);
+            score -= (option.budget - user.budget) * 2; // Penalize going over budget
+        }
+
+        // Time checking and Utilization Bonus
+        if (option.min_length <= user.length) {
+            score += 10;
+            // Reward for utilizing more of the requested time block
+            score += (option.min_length / user.length) * 10; 
+        } else {
+            score -= ((option.min_length - user.length) * 10);
         }
 
         return score;
@@ -159,11 +168,56 @@ document.addEventListener('DOMContentLoaded', () => {
             preference: document.getElementById('preference').value
         };
 
-        // Score all dates and sort them from highest score to lowest
-        rankedMatches = dateIdeas.map(date => {
-            return {
+        let allOptions = [];
+
+        // 1. Add Single Dates
+        dateIdeas.forEach(date => {
+            allOptions.push({
                 ...date,
-                score: calculateScore(date, userInputs)
+                isCombo: false
+            });
+        });
+
+        // 2. Build Valid Combo Dates
+        for (let i = 0; i < dateIdeas.length; i++) {
+            for (let j = 0; j < dateIdeas.length; j++) {
+                if (i === j) continue; // Don't match a date with itself
+                
+                let d1 = dateIdeas[i];
+                let d2 = dateIdeas[j];
+
+                let comboTime = d1.min_length + d2.min_length + 0.5; // Includes 30 min buffer
+                let comboBudget = d1.budget + d2.budget;
+
+                // Only build the combo if it fits within the user's max budget and time
+                if (comboTime <= userInputs.length && comboBudget <= userInputs.budget) {
+                    
+                    // Enforce Energy Downward Transition Rule
+                    if (energyLevels[d2.energy] > energyLevels[d1.energy]) {
+                        continue; // Second date cannot have higher energy than the first
+                    }
+
+                    allOptions.push({
+                        isCombo: true,
+                        id: `combo-${d1.id}-${d2.id}`,
+                        title: `Double Feature: ${d1.title} + ${d2.title}`,
+                        energy: d1.energy, // Base energy classification on Part 1
+                        budget: comboBudget,
+                        min_length: comboTime,
+                        preference: d1.preference, // Primary preference for filtering
+                        description: `<strong>Part 1:</strong> ${d1.description}<br><br><em>~ 30 min allowed for travel/break ~</em><br><br><strong>Part 2:</strong> ${d2.description}`,
+                        d1_pref: d1.preference,
+                        d2_pref: d2.preference
+                    });
+                }
+            }
+        }
+
+        // Score all options and sort them from highest score to lowest
+        rankedMatches = allOptions.map(option => {
+            return {
+                ...option,
+                score: calculateScore(option, userInputs)
             };
         }).sort((a, b) => b.score - a.score);
 
@@ -175,6 +229,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayResult() {
         form.classList.add('hidden');
         resultBox.classList.remove('hidden');
+
+        if (rankedMatches.length === 0) {
+            dateResult.innerHTML = `<h3>No dates found. Try increasing your budget or time!</h3>`;
+            nextBestBtn.classList.add('hidden');
+            return;
+        }
 
         const selectedDate = rankedMatches[currentMatchIndex];
         
@@ -191,13 +251,15 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="match-status">${matchText}</div>
             <h3>${selectedDate.title}</h3>
             <p><strong>When:</strong> ${formattedTime}</p>
-            <p><strong>Estimated Cost:</strong> $${selectedDate.budget}</p>
-            <p><strong>Time Needed:</strong> ${selectedDate.min_length} hours</p>
-            <p>${selectedDate.description}</p>
+            <p><strong>Total Estimated Cost:</strong> $${selectedDate.budget}</p>
+            <p><strong>Total Time Needed:</strong> ${selectedDate.min_length} hours</p>
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
+                <p style="margin-bottom:0; text-align: left;">${selectedDate.description}</p>
+            </div>
         `;
 
-        // Hide the "Next Best" button if we've shown the top 5 matches
-        if (currentMatchIndex >= 4 || currentMatchIndex >= rankedMatches.length - 1) {
+        // Hide the "Next Best" button if we've shown the top 10 matches or run out
+        if (currentMatchIndex >= 9 || currentMatchIndex >= rankedMatches.length - 1) {
             nextBestBtn.classList.add('hidden');
         } else {
             nextBestBtn.classList.remove('hidden');
