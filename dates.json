@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "title": "No-Recipe Cooking Challenge",
+    "energy": "medium",
+    "budget": 35,
+    "min_length": 2,
+    "preference": "food",
+    "description": "We pick up some fresh ingredients and try to invent a new Asian or Italian fusion dish from scratch. No recipes allowed."
+  },
+  {
+    "id": 2,
+    "title": "Victorian Era Vibes & Coffee",
+    "energy": "low",
+    "budget": 15,
+    "min_length": 1,
+    "preference": "coffee",
+    "description": "I'll brew up a light-roast French press with a little rose syrup. We can sip, relax, and maybe play a round of chess."
+  },
+  {
+    "id": 3,
+    "title": "Spanish Fork Canyon Exploration",
+    "energy": "high",
+    "budget": 10,
+    "min_length": 3,
+    "preference": "see something new",
+    "description": "A drive and a hike up the canyon to explore. We can look for cool bugs, take photos, and just enjoy the outdoors."
+  },
+  {
+    "id": 4,
+    "title": "Local Museum or Gallery",
+    "energy": "medium",
+    "budget": 25,
+    "min_length": 2,
+    "preference": "intellectual",
+    "description": "Spend the afternoon walking through a local museum or art gallery, learning something entirely new."
+  },
+  {
+    "id": 5,
+    "title": "At-Home Movie Marathon",
+    "energy": "low",
+    "budget": 0,
+    "min_length": 3,
+    "preference": "cozy",
+    "description": "Blankets, popcorn, and a double feature of movies we've never seen before."
+  }
+]

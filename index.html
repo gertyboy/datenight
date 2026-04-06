@@ -1,13 +1,64 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>Date Night!</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfect Date Night Builder</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Date Night!</h1>
-    <h2 id="random-date"></h2>
-    <button id="button">Pick a date</button>
-    <script src="./scripts/script.js"></script>
+    <div class="container">
+        <h1>Date Night Builder</h1>
+        <p>Fill this out to find our perfect date!</p>
+
+        <form id="dateForm">
+            <div class="form-group">
+                <label for="dayTime">1. When are we going?</label>
+                <input type="datetime-local" id="dayTime" required>
+            </div>
+
+            <div class="form-group">
+                <label for="energy">2. What's your energy level?</label>
+                <select id="energy" required>
+                    <option value="" disabled selected>Select one...</option>
+                    <option value="high">High (Let's do something active!)</option>
+                    <option value="medium">Medium (Ready to walk and talk)</option>
+                    <option value="low">Low (Keep it chill and relaxing)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="budget">3. Max Budget ($)?</label>
+                <input type="number" id="budget" placeholder="e.g., 40" min="0" required>
+            </div>
+
+            <div class="form-group">
+                <label for="length">4. How much time do we have (Hours)?</label>
+                <input type="number" id="length" placeholder="e.g., 2.5" step="0.5" min="0.5" required>
+            </div>
+
+            <div class="form-group">
+                <label for="preference">5. What's the main vibe?</label>
+                <select id="preference" required>
+                    <option value="" disabled selected>Select one...</option>
+                    <option value="food">Food & Cooking</option>
+                    <option value="coffee">Coffee & Chats</option>
+                    <option value="intellectual">Intellectual/Learning</option>
+                    <option value="see something new">Explore/See Something New</option>
+                    <option value="cozy">Cozy Night In</option>
+                </select>
+            </div>
+
+            <button type="submit">Find the Perfect Date</button>
+        </form>
+
+        <div id="resultBox" class="hidden">
+            <h2>Your Perfect Date:</h2>
+            <div id="dateResult"></div>
+            <button id="resetBtn">Plan Another</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
